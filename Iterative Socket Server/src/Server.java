@@ -14,25 +14,27 @@ public class Server {
 
 		try {
 			ServerSocket serverSocket = new ServerSocket(port);
-			Socket socket = serverSocket.accept();
+			System.out.println("Server is listening on port: " + port);
 			
-			System.out.println("Client Connected.");
 			
-			InputStreamReader inStreamReader = new InputStreamReader(socket.getInputStream());
-			BufferedReader bf = new BufferedReader(inStreamReader);
-			
-			while(true) {
-				query = bf.readLine();
-				if(query == null) {
-					break;
-				}
+			while(true) {				
+				Socket socket = serverSocket.accept();
 				
+				InputStreamReader inStreamReader = new InputStreamReader(socket.getInputStream());
+				BufferedReader bf = new BufferedReader(inStreamReader);
 				PrintWriter pr = new PrintWriter(socket.getOutputStream());
 				
+				System.out.println("New client connected.");
+				
+				query = bf.readLine();
+		
 				if(query.equalsIgnoreCase("Time")) {
 					pr.println(dateAndTime());
 				}
 				pr.flush();
+				
+				socket.close();
+				System.out.println("Socket closed.");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -49,4 +51,3 @@ public class Server {
 	
 
 }
-
