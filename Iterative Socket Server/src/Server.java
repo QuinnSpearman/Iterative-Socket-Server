@@ -4,8 +4,13 @@ import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 public class Server {
-
+	
+	static long uptimeStart = System.nanoTime();
+	
 	public static void main(String[] args) {
+		
+		
+		
 		Scanner in = new Scanner(System.in);
 		int port;
 		String query;
@@ -42,8 +47,12 @@ public class Server {
 		
 				// Checks which query was requested by the user
 				if(query.equalsIgnoreCase("Time")) {
-					// Sends the date and time back to the user
+					// Sends the date and time to the user
 					pr.println(dateAndTime());
+				}
+				else if(query.equalsIgnoreCase("Uptime")) {
+					// Sends the uptime to the user
+					pr.println(uptime());
 				}
 				
 				// Flushes the Print Reader stream
@@ -60,11 +69,53 @@ public class Server {
 
 	}
 	
-	
+	// Returns a string with the current date and time on the server
 	private static String dateAndTime() {
 		LocalDateTime dateTime = LocalDateTime.now();
 		return dateTime.format(DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss"));
 	}
 	
-
+	// Returns a string with the elapsed time which the server has been running
+	private static String uptime() {
+		int seconds;
+		int minutes;
+		int hours;
+		int days;
+		String totalTime = "Uptime: ";
+		
+		seconds = (int)((System.nanoTime() - uptimeStart) / 1000000000);
+		
+		days = seconds / 86400;
+		
+		if(days > 0) {
+			totalTime += days + "d ";
+		}
+		
+		seconds %= 86400;
+		
+		hours = seconds / 3600;
+		
+		if(hours > 0) {
+			totalTime += hours + "h ";
+		}
+		
+		seconds %= 3600;
+		
+		minutes = seconds / 60;
+		
+		
+		if(minutes > 0) {
+			totalTime += minutes + "m ";
+		}
+		
+		seconds %= 60;
+		
+		if(seconds > 0) {
+			totalTime += seconds + "s ";
+		}
+		
+		return totalTime;
+		
+	}
+	
 }
