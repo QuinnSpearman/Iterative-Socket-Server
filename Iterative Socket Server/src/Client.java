@@ -25,7 +25,7 @@ public class Client implements Runnable {
 		in.nextLine();
 
 		// User enters which query they want to request
-		System.out.println("Available commands: Time | Uptime");
+		System.out.println("Available commands: Date and Time | Uptime | Memory Use | Netstat | Current Users | Running Processes");
 		System.out.print("Enter a command: ");
 		query = in.nextLine();
 
@@ -56,6 +56,7 @@ public class Client implements Runnable {
 	public void run() {
 		
 		long runtime = 0;
+		StringBuilder message = new StringBuilder();
 		
 		try {
 			// Starts a system timer
@@ -76,11 +77,15 @@ public class Client implements Runnable {
 			BufferedReader bf = new BufferedReader(inStreamReader);
 
 			// Reads the message from the server
-			String message = bf.readLine();
+			String line;
+			while((line = bf.readLine()) != null) {
+				message.append(line + "\n");
+			}
+
 			// Stops the timer
 			long stop = System.nanoTime();
 			// Displays the message
-			System.out.println(name + " - " + message);
+			System.out.println(name + ": " + message);
 
 			// Calculates the runtime of the query in milliseconds
 			runtime = ((stop - start) / 1000000);

@@ -1,16 +1,13 @@
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+import java.lang.Runtime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 public class Server {
 	
-	static long uptimeStart = System.nanoTime();
-	
 	public static void main(String[] args) {
-		
-		
-		
+			
 		Scanner in = new Scanner(System.in);
 		int port;
 		String query;
@@ -28,6 +25,8 @@ public class Server {
 			// While loop that assures that as long as the server is up, it is listening for client requests 
 			while(true) {				
 				
+				StringBuilder message = new StringBuilder();
+				
 				// Starts listening for requests from clients
 				Socket socket = serverSocket.accept();
 				
@@ -43,20 +42,73 @@ public class Server {
 				System.out.println("New client connected.");
 				
 				// Reads a query from the client
-				query = bf.readLine();
-		
+				query = bf.readLine(); //check converting this straight to lowercase
+				
+				query = query.toLowerCase();
+				
+				
+				switch(query) {
+					case "date and time":
+						query = "date";
+						break;
+					case "memory use":
+						query = "free -h";
+						message.append("\n");
+						break;
+					case "current users":
+						query = "w";
+						break;
+					case "running processes":
+						query = "ps -aux";
+						message.append("\n");
+					case "uptime":
+					case "netstat":
+						break;
+				}
+					
+					//ProcessBuilder processBuilder = new ProcessBuilder();
+					
+					//processBuilder.command(query);
+					
+					Process process = Runtime.getRuntime().exec(query);
+					
+					BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));		
+					
+					String line;
+					while((line = reader.readLine()) != null) {
+						message.append(line + "\n");
+					}
+				
+				pr.println(message.toString());
+				
 				// Checks which query was requested by the user
-				if(query.equalsIgnoreCase("Time")) {
+				/*if(query.equalsIgnoreCase("Time")) {
 					// Sends the date and time to the user
-					pr.println(dateAndTime());
+					
+					processBuilder.command("date");
+					
+					Process process = processBuilder.start();
+					
+					BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+					
+					String line;
+					while((line = reader.readLine()) != null) {
+						message += line;
+					}
+					
+					pr.println(message);
 				}
 				else if(query.equalsIgnoreCase("Uptime")) {
 					// Sends the uptime to the user
-					pr.println(uptime());
+					//pr.println(uptime());
 				}
+				else if(query.equalsIgnoreCase("Memory Usage")) {
+					pr.println(memoryUsage());
+				}*/
 				
 				// Flushes the Print Reader stream
 				pr.flush();
+				
 				
 				// Closes the socket and notifies the server administrator of the closure of the socket
 				socket.close();
@@ -76,46 +128,9 @@ public class Server {
 	}
 	
 	// Returns a string with the elapsed time which the server has been running
-	private static String uptime() {
-		int seconds;
-		int minutes;
-		int hours;
-		int days;
-		String totalTime = "Uptime: ";
-		
-		seconds = (int)((System.nanoTime() - uptimeStart) / 1000000000);
-		
-		days = seconds / 86400;
-		
-		if(days > 0) {
-			totalTime += days + "d ";
-		}
-		
-		seconds %= 86400;
-		
-		hours = seconds / 3600;
-		
-		if(hours > 0) {
-			totalTime += hours + "h ";
-		}
-		
-		seconds %= 3600;
-		
-		minutes = seconds / 60;
-		
-		
-		if(minutes > 0) {
-			totalTime += minutes + "m ";
-		}
-		
-		seconds %= 60;
-		
-		if(seconds > 0) {
-			totalTime += seconds + "s ";
-		}
-		
-		return totalTime;
-		
+	
+	private static String memoryUsage() {
+		return "Memory usage " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024  + "Kb";
 	}
 	
 }
