@@ -17,8 +17,10 @@ public class Server {
 		String message = "";
 
 		// Prompts user for a port number and stores input in port variable
-		System.out.print("Enter a port: ");
-		port = in.nextInt();
+		do {
+			System.out.print("Enter a port # in range 1025 - 4998: ");
+			port = in.nextInt();	
+		}while(port < 1025 || port > 4998);
 
 		try {
 
@@ -80,7 +82,7 @@ public class Server {
 				pr.flush();
 
 				// Displays that the response has been transmitted and what that response is.
-				System.out.println("Response transmitted: " + query + "\n");
+				System.out.println("Response transmitted in form of: " + message + "\n");
 
 				// Flushes the print writer stream
 

@@ -12,7 +12,7 @@ public class Client implements Runnable {
 	static int clientQuantity;
 	static int totalRuntime = 0;
 	static ArrayList<String> runtimes = new ArrayList<String>();
-
+	
 	public static void main(String[] args) {
 
 		Scanner in = new Scanner(System.in);
@@ -21,10 +21,12 @@ public class Client implements Runnable {
 		ArrayList<Thread> clients = new ArrayList<Thread>();
 
 		// User enters a port number which is stored in port variable
-		System.out.print("Enter a port: ");
-		port = in.nextInt();
-		in.nextLine();
-
+		do {
+			System.out.print("Enter a port # in range 1025 - 4998: ");
+			port = in.nextInt();
+			in.nextLine();
+		}while(port < 1025 || port > 4998);
+		
 		// User enters which query they want to request
 		System.out.println("Available commands: Date and Time | Uptime | Memory Use | Netstat | Current Users | Running Processes");
 		System.out.print("Enter a command: ");
