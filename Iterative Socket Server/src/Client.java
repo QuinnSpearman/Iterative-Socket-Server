@@ -7,11 +7,12 @@ public class Client implements Runnable {
 
 	// Global variable declarations
 	static String query;
-	String clientName;
+	int clientNum;
 	static int port;
 	static int clientQuantity;
 	static int totalRuntime = 0;
-	static ArrayList<String> runtimes = new ArrayList<String>();
+	static String[] runtimes;
+	static int numOfRuntimesRecorded;
 	
 	public static void main(String[] args) {
 
@@ -35,11 +36,13 @@ public class Client implements Runnable {
 		// User enters the number of clients they want to spawn
 		System.out.print("Number of clients: ");
 		clientQuantity = in.nextInt();
+		
+		runtimes = new String[clientQuantity];
 
 		// Creates a thread object and adds it to the clients array
 		// (one for each client)
 		for (int i = 1; i <= clientQuantity; i++) {
-			clients.add(new Thread(new Client("Client " + (i))));
+			clients.add(new Thread(new Client(i)));
 		}
 
 		// Runs the run function once for each client
@@ -50,8 +53,8 @@ public class Client implements Runnable {
 	}
 
 	// Client object constructor
-	public Client(String name) {
-		clientName = name;
+	public Client(int num) {
+		clientNum = num;
 	}
 
 	// Run function which runs a separate thread for every client simultaneously
@@ -96,7 +99,7 @@ public class Client implements Runnable {
 			long stop = System.currentTimeMillis();
 			
 			// Displays the message
-			System.out.println(clientName + ": " + message);
+			System.out.println("Client " + clientNum + ": " + message);
 
 			// Calculates the runtime of the query in milliseconds
 			runtime = stop - start;
@@ -105,10 +108,11 @@ public class Client implements Runnable {
 			totalRuntime += runtime;
 			
 			// Adds the runtime to the runtimes array
-			runtimes.add(clientName + " runtime: " + runtime + "ms");
+			runtimes[clientNum - 1] = "Client " + clientNum + " runtime: " + runtime + "ms";
+			++numOfRuntimesRecorded;
 			
 			// If this is the final client request, display all of the runtimes
-			if (clientQuantity <= runtimes.size()) {
+			if (clientQuantity <= numOfRuntimesRecorded) {
 				displayRuntimes();
 			}
 
@@ -119,15 +123,16 @@ public class Client implements Runnable {
 	}
 	
 	// Displays the individual, total, and average runtimes
-	private void displayRuntimes() {
+	private static void displayRuntimes() {
 		
 		// Sorts all client query runtimes in order of client number
-		Collections.sort(runtimes);
+		//Collections.sort(runtimes);
 		
 		// displays all of the client runtimes
 		for (int i = 0; i < clientQuantity; i++) {					
-			System.out.println(runtimes.get(i));
+			System.out.println(runtimes[i]);
 		}
+		
 		// displays total and average runtimes of clients
 		System.out.println("Total runtime: " + totalRuntime + "ms");
 		System.out.println("Average runtime: " + totalRuntime / clientQuantity + "ms");
