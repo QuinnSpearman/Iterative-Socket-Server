@@ -7,12 +7,13 @@ public class Client implements Runnable {
 
 	// Global variable declarations
 	static String query;
-	int clientNum;
+	static String IP;
 	static int port;
 	static int clientQuantity;
 	static int totalRuntime = 0;
 	static String[] runtimes;
 	static int numOfRuntimesRecorded;
+	int clientNum;
 	
 	public static void main(String[] args) {
 
@@ -20,6 +21,10 @@ public class Client implements Runnable {
 
 		// ArrayList which is used to store each thread
 		ArrayList<Thread> clients = new ArrayList<Thread>();
+		
+		// User enters an IP Address 
+		System.out.print("Enter an IP Address: ");
+		IP = in.nextLine();
 
 		// User enters a port number which is stored in port variable
 		do {
@@ -37,6 +42,9 @@ public class Client implements Runnable {
 		System.out.print("Number of clients: ");
 		clientQuantity = in.nextInt();
 		
+		in.close();
+		
+		// Initializes string for storing runtimes
 		runtimes = new String[clientQuantity];
 
 		// Creates a thread object and adds it to the clients array
@@ -70,7 +78,7 @@ public class Client implements Runnable {
 			// Stores the current system time in nanoseconds 
 			long start = System.currentTimeMillis();
 			// Creates a socket object
-			Socket socket = new Socket("139.62.210.153", port);
+			Socket socket = new Socket(IP, port);
 			// Creates a Print Writer object
 			PrintWriter querySender = new PrintWriter(socket.getOutputStream());
 
@@ -98,11 +106,11 @@ public class Client implements Runnable {
 			// Stores the system time in milliseconds
 			long stop = System.currentTimeMillis();
 			
-			// Displays the message
-			System.out.println("Client " + clientNum + ": " + message);
-
 			// Calculates the runtime of the query in milliseconds
 			runtime = stop - start;
+			
+			// Displays the message
+			System.out.println("Client " + clientNum + ": " + message);
 			
 			// Sums the total runtime of all clients
 			totalRuntime += runtime;

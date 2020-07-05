@@ -15,7 +15,7 @@ public class Server {
 		int port;
 		String query;
 		String message = "";
-
+		
 		// Prompts user for a port number and stores input in port variable
 		do {
 			System.out.print("Enter a port # in range 1025 - 4998: ");
@@ -51,9 +51,6 @@ public class Server {
 
 				query = query.toLowerCase();
 
-				// Displays that a query has been received and what the query is
-				System.out.println("Query received: " + query);
-
 				// Determines which command is being requested, gets the command output from the
 				// getCommand function and stores it in message
 				switch (query) {
@@ -80,9 +77,6 @@ public class Server {
 
 				pr.println(message);
 				pr.flush();
-
-				// Displays that the response has been transmitted and what that response is.
-				System.out.println("Response transmitted in form of: " + message + "\n");
 
 				// Flushes the print writer stream
 
